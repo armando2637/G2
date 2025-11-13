@@ -1,1 +1,111 @@
+package service;
+
+import model.Pedido;
+
+import java.util.*;
+
+public class PizzariaService {
+
+    // ---------- 1. SET para sabores ----------
+    private Set<String> sabores = new HashSet<>();
+
+    public boolean adicionarSabor(String sabor) {
+        return sabores.add(sabor);
+    }
+
+    public boolean removerSabor(String sabor) {
+        return sabores.remove(sabor);
+    }
+
+    public boolean existeSabor(String sabor) {
+        return sabores.contains(sabor);
+    }
+
+    public Set<String> listarSabores() {
+        return new HashSet<>(sabores);
+    }
+
+    // ---------- 2. LIST para pedidos abertos ----------
+    private List<Pedido> pedidosAbertos = new ArrayList<>();
+
+    public void adicionarPedido(Pedido p) {
+        pedidosAbertos.add(p);
+    }
+
+    public List<Pedido> listarPedidos() {
+        return new ArrayList<>(pedidosAbertos);
+    }
+
+    public Pedido buscarPedido(int numero) {
+        for (Pedido p : pedidosAbertos) {
+            if (p.getNumero() == numero) return p;
+        }
+        return null;
+    }
+
+    public void ordenarPorValor() {
+        pedidosAbertos.sort(Comparator.comparingDouble(Pedido::getValor));
+    }
+
+    public void ordenarPorCliente() {
+        pedidosAbertos.sort(Comparator.comparing(Pedido::getCliente));
+    }
+
+    // ---------- 3. QUEUE para fila de entregas ----------
+    private Queue<Pedido> filaEntregas = new LinkedList<>();
+
+    public void adicionarFila(Pedido p) {
+        filaEntregas.offer(p);
+    }
+
+    public Pedido entregar() {
+        return filaEntregas.poll();
+    }
+
+    public Pedido proximoEntrega() {
+        return filaEntregas.peek();
+    }
+
+    // ---------- 4. PRIORITYQUEUE para pedidos prioritários ----------
+    private PriorityQueue<Pedido> prioridade =
+            new PriorityQueue<>(Comparator.comparingInt(Pedido::getTempoPreparo)); // menor tempo = maior prioridade
+
+    public void adicionarPrioritario(Pedido p) {
+        prioridade.offer(p);
+    }
+
+    public Pedido chamarPrioritario() {
+        return prioridade.poll();
+    }
+
+    // ---------- 5. STACK para cancelados ----------
+    private Stack<Pedido> cancelados = new Stack<>();
+
+    public void cancelarPedido(Pedido p) {
+        cancelados.push(p);
+    }
+
+    public Pedido ultimoCancelado() {
+        return cancelados.peek();
+    }
+
+    public Pedido removerCancelado() {
+        return cancelados.pop();
+    }
+
+    // ---------- 6. MAP vendas por sabor ----------
+    private Map<String, Integer> vendasPorSabor = new HashMap<>();
+
+    public void registrarVenda(String sabor) {
+        vendasPorSabor.put(sabor, vendasPorSabor.getOrDefault(sabor, 0) + 1);
+    }
+
+    public int totalVendido(String sabor) {
+        return vendasPorSabor.getOrDefault(sabor, 0);
+    }
+
+    public Map<String, Integer> rankingSabores() {
+        return new TreeMap<>(vendasPorSabor);
+    }
+}
 
