@@ -1,0 +1,54 @@
+package app;
+
+import model.Pedido;
+import service.PizzariaService;
+
+public class Main {
+    public static void main(String[] args) {
+
+        PizzariaService pizzaria = new PizzariaService();
+
+        // SABORES
+        pizzaria.adicionarSabor("Calabresa");
+        pizzaria.adicionarSabor("Mussarela");
+        pizzaria.adicionarSabor("Calabresa"); // ignorado automaticamente
+
+        System.out.println("Sabores: " + pizzaria.listarSabores());
+
+        // PEDIDOS
+        pizzaria.adicionarPedido(new Pedido(1, "João", "Calabresa", 'M', 40, 20));
+        pizzaria.adicionarPedido(new Pedido(2, "Maria", "Frango", 'G', 55, 15));
+        pizzaria.adicionarPedido(new Pedido(3, "Ana", "Mussarela", 'P', 30, 10));
+
+        System.out.println("\nPedidos cadastrados:");
+        pizzaria.listarPedidos().forEach(System.out::println);
+
+        // ORDENAR
+        pizzaria.ordenarPorValor();
+        System.out.println("\nOrdenados por valor:");
+        pizzaria.listarPedidos().forEach(System.out::println);
+
+        // FILA
+        pizzaria.adicionarFila(new Pedido(10, "Carlos", "Calabresa", 'M', 40, 20));
+        pizzaria.adicionarFila(new Pedido(11, "Fernanda", "Mussarela", 'G', 50, 25));
+        System.out.println("\nFila próxima entrega: " + pizzaria.proximoEntrega());
+
+        // PRIORIDADE
+        pizzaria.adicionarPrioritario(new Pedido(20, "VIP João", "Portuguesa", 'G', 60, 5));
+        pizzaria.adicionarPrioritario(new Pedido(21, "VIP Carla", "4 Queijos", 'M', 48, 3));
+
+        System.out.println("\nChamando prioritário: " + pizzaria.chamarPrioritario());
+
+        // CANCELADOS
+        pizzaria.cancelarPedido(new Pedido(40, "Rafael", "Calabresa", 'P', 30, 12));
+        System.out.println("\nÚltimo cancelado: " + pizzaria.ultimoCancelado());
+
+        // VENDAS
+        pizzaria.registrarVenda("Calabresa");
+        pizzaria.registrarVenda("Calabresa");
+        pizzaria.registrarVenda("Mussarela");
+
+        System.out.println("\nRanking sabores vendidos: " + pizzaria.rankingSabores());
+        System.out.println("Total Calabresa: " + pizzaria.totalVendido("Calabresa"));
+    }
+}
